@@ -39,6 +39,16 @@ def try_float(x: Any) -> float | None:
         return None
 
 
+def is_empty(x: Any) -> bool:
+    if x is None:
+        return True
+    if isinstance(x, str):
+        return norm_str(x) == ""
+    if isinstance(x, float) and math.isnan(x):
+        return True
+    return False
+
+
 
 
 
