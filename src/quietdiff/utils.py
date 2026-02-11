@@ -49,6 +49,18 @@ def is_empty(x: Any) -> bool:
     return False
 
 
+def uniq_preserve(items: Iterable[str]) -> list[str]:
+    seen = set()
+    out = []
+    for i in items:
+        if i in seen:
+            continue
+        seen.add(i)
+        out.append(i)
+    return out
 
+
+def safe_key(parts: Iterable[Any]) -> str:
+    return " | ".join(norm_str(p) for p in parts)
 
 
