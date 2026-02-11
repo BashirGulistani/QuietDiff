@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quietdiff"
+version = "0.1.0"
+description = "Compare CSV/XLSX exports and generate JSON/CSV/HTML diffs."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["openpyxl>=3.1.2"]
+
+[project.scripts]
+quietdiff = "quietdiff.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+quietdiff = ["templates/report.html"]
