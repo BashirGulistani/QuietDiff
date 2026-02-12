@@ -99,5 +99,54 @@ def diff_tables(
     compared = [c for c in all_cols if _should_compare(c, include_set, ignore_set)]
 
 
+    li, dups_l = _build_index(left.rows, keys)
+    ri, dups_r = _build_index(right.rows, keys)
+
+    added: list[RowChange] = []
+    removed: list[RowChange] = []
+    changed: list[RowChange] = []
+
+    left_keys = set(li.keys())
+    right_keys = set(ri.keys())
+
+    for k in sorted(list(left_keys - right_keys)):
+        removed.append(RowChange(key=k, old_row=li[k], new_row=None, changes=[]))
+
+    for k in sorted(list(right_keys - left_keys)):
+        added.append(RowChange(key=k, old_row=None, new_row=ri[k], changes=[]))
+
+    overlap = sorted(list(left_keys & right_keys))
+    for k in overlap:
+        old = li[k]
+        new = ri[k]
+        cell_changes: list[CellChange] = []
+        for c in compared:
+            ov = old.get(c)
+            nv = new.get(c)
+            if not _cell_equal(ov, nv, tolerance):
+                cell_changes.append(CellChange(column=c, old=ov, new=nv))
+        if cell_changes:
+            changed.append(RowChange(key=k, old_row=old, new_row=new, changes=cell_changes))
+
+    if fuzzy and (added or removed):
+        unmatched_left = [x for x in removed]
+        unmatched_right = [x for x in added]
+        if keys == ["name"] or any("name" in k.lower() for k in keys):
+            pass
+
+        used_right = set()
+        repaired_changed: list[RowChange] = []
+        repaired_removed: list[RowChange] = []
+        repaired_added: list[RowChange] = []
+
+        right_candidates = [(rc.key, rc.new_row) for rc in unmatched_right if rc.new_row is not None]
+        for rc in unmatched_left:
+            if rc.old_row is None:
+                continue
+            best = (0.0, None, None)
+            for rk, rr in right_candidates:
+                if rk in used_right:
+                    continue
+
 
 
