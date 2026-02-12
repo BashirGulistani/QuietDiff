@@ -35,6 +35,24 @@ def _read_csv(path: str) -> Table:
 
 
 
+def _read_xlsx(path: str, sheet: str | None) -> Table:
+    wb = load_workbook(path, read_only=True, data_only=True)
+    ws = wb[sheet] if sheet else wb.worksheets[0]
+    it = ws.iter_rows(values_only=True)
+    try:
+        header = next(it)
+    except StopIteration:
+        return Table(name=os.path.basename(path), columns=[], rows=[])
+
+    cols = [norm_str(c) for c in header if c is not None]
+    col_idx = []
+    for i, c in enumerate(header):
+        if c is None:
+            continue
+        if norm_str(c) == "":
+            continue
+        col_idx.append((i, norm_str(c)))
+
 
 
 
