@@ -54,7 +54,31 @@ def _read_xlsx(path: str, sheet: str | None) -> Table:
         col_idx.append((i, norm_str(c)))
 
 
+    rows: list[dict[str, Any]] = []
+    for tup in it:
+        if tup is None:
+            continue
+        row: dict[str, Any] = {}
+        for i, c in col_idx:
+            val = tup[i] if i < len(tup) else None
+            row[c] = val
+        rows.append(row)
+    wb.close()
+    return Table(name=os.path.basename(path), columns=cols, rows=rows)
 
+
+def read_table(path: str, sheet: str | None = None) -> Table:
+    p = path.lower()
+    if p.endswith(".csv"):
+        return _read_csv(path)
+    if p.endswith(".xlsx"):
+        return _read_xlsx(path, sheet)
+    raise ValueError(f"Unsupported file type: {path}")
+
+
+def ensure_out_dir(out_dir: str) -> str:
+    os.makedirs(out_dir, exist_ok=True)
+    return out_dir
 
 
 
