@@ -153,5 +153,50 @@ def diff_tables(
                 score = _similar(left_sig, right_sig)
                 if score > best[0]:
                     best = (score, rk, rr)
+            if best[1] is not None and best[0] >= fuzzy_threshold:
+                used_right.add(best[1])
+                old = rc.old_row
+                new = best[2]
+                cell_changes: list[CellChange] = []
+                for c in compared:
+                    ov = old.get(c)
+                    nv = new.get(c)
+                    if not _cell_equal(ov, nv, tolerance):
+                        cell_changes.append(CellChange(column=c, old=ov, new=nv))
+                repaired_changed.append(RowChange(key=f"{rc.key} -> {best[1]}", old_row=old, new_row=new, changes=cell_changes))
 
+        removed_keys = set(x.key for x in unmatched_left)
+        added_keys = set(x.key for x in unmatched_right)
+
+        matched_right = used_right
+        matched_left = set()
+        for r in repaired_changed:
+            left_part = r.key.split(" -> ")[0]
+            matched_left.add(left_part)
+
+        for r in unmatched_left:
+            if r.key in matched_left:
+                continue
+            repaired_removed.append(r)
+
+        for r in unmatched_right:
+            if r.key in matched_right:
+                continue
+            repaired_added.append(r)
+
+        changed = changed + repaired_changed
+        removed = repaired_removed
+        added = repaired_added
+
+    return DiffResult(
+        left_name=left.name,
+        right_name=right.name,
+        keys=keys,
+        compared_columns=compared,
+        added=added,
+        removed=removed,
+        changed=sorted(changed, key=lambda x: x.key),
+        duplicates_left=sorted(list(set(dups_l))),
+        duplicates_right=sorted(list(set(dups_r))),
+    )
 
