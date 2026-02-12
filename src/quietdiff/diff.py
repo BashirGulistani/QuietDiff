@@ -36,6 +36,34 @@ class DiffResult:
     duplicates_left: list[str]
     duplicates_right: list[str]
 
+def _similar(a: str, b: str) -> float:
+    if a == b:
+        return 1.0
+    if a == "" or b == "":
+        return 0.0
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def _build_index(rows: list[dict[str, Any]], keys: list[str]) -> tuple[dict[str, dict[str, Any]], list[str]]:
+    seen = {}
+    dups: list[str] = []
+    for r in rows:
+        k = safe_key(r.get(x) for x in keys)
+        if k in seen:
+            dups.append(k)
+            continue
+        seen[k] = r
+    return seen, dups
+
+
+def _should_compare(col: str, include: set[str] | None, ignore: set[str] | None) -> bool:
+    if include is not None:
+        return col in include
+    if ignore is not None and col in ignore:
+        return False
+    return True
+
+
 
 
 
