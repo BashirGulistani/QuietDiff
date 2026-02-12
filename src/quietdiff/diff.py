@@ -148,5 +148,10 @@ def diff_tables(
                 if rk in used_right:
                     continue
 
+                left_sig = safe_key(rc.old_row.get(x) for x in keys)
+                right_sig = safe_key(rr.get(x) for x in keys)
+                score = _similar(left_sig, right_sig)
+                if score > best[0]:
+                    best = (score, rk, rr)
 
 
