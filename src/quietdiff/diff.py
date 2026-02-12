@@ -64,6 +64,16 @@ def _should_compare(col: str, include: set[str] | None, ignore: set[str] | None)
     return True
 
 
+def _cell_equal(a: Any, b: Any, tolerance: float) -> bool:
+    if is_empty(a) and is_empty(b):
+        return True
+    fa = try_float(a)
+    fb = try_float(b)
+    if fa is not None and fb is not None:
+        return abs(fa - fb) <= tolerance
+    return norm_str(a) == norm_str(b)
+
+
 
 
 
