@@ -74,6 +74,29 @@ def _cell_equal(a: Any, b: Any, tolerance: float) -> bool:
     return norm_str(a) == norm_str(b)
 
 
+def diff_tables(
+    left: Table,
+    right: Table,
+    keys: list[str],
+    include: list[str] | None = None,
+    ignore: list[str] | None = None,
+    tolerance: float = 0.0,
+    fuzzy: bool = False,
+    fuzzy_threshold: float = 0.92,
+) -> DiffResult:
+    if not keys:
+        raise ValueError("At least one --key is required")
+    left_cols = set(left.columns)
+    right_cols = set(right.columns)
+    for k in keys:
+        if k not in left_cols or k not in right_cols:
+            raise ValueError(f"Key column missing in one file: {k}")
+
+    include_set = set(include) if include else None
+    ignore_set = set(ignore) if ignore else None
+
+    all_cols = sorted(list((left_cols | right_cols) - set(keys)))
+    compared = [c for c in all_cols if _should_compare(c, include_set, ignore_set)]
 
 
 
