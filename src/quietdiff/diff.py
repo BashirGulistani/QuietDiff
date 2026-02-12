@@ -16,3 +16,27 @@ class CellChange:
 
 
 
+@dataclass(frozen=True)
+class RowChange:
+    key: str
+    old_row: dict[str, Any] | None
+    new_row: dict[str, Any] | None
+    changes: list[CellChange]
+
+
+@dataclass(frozen=True)
+class DiffResult:
+    left_name: str
+    right_name: str
+    keys: list[str]
+    compared_columns: list[str]
+    added: list[RowChange]
+    removed: list[RowChange]
+    changed: list[RowChange]
+    duplicates_left: list[str]
+    duplicates_right: list[str]
+
+
+
+
+
