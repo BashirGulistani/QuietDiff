@@ -35,6 +35,32 @@ def _flatten(diff: DiffResult) -> list[dict[str, Any]]:
             }
         )
 
+    for r in diff.changed:
+        if not r.changes:
+            rows.append(
+                {
+                    "type": "changed",
+                    "key": r.key,
+                    "column": "",
+                    "old": "",
+                    "new": "",
+                }
+            )
+            continue
+        for c in r.changes:
+            rows.append(
+                {
+                    "type": "changed",
+                    "key": r.key,
+                    "column": c.column,
+                    "old": norm_str(c.old),
+                    "new": norm_str(c.new),
+                }
+            )
+
+    return rows
+
+
 
 
 
