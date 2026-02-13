@@ -113,7 +113,18 @@ def write_html(diff: DiffResult, flat_rows: list[dict[str, Any]], out_path: str)
         f.write(html)
 
 
+def write_all(diff: DiffResult, out_dir: str) -> dict[str, str]:
+    os.makedirs(out_dir, exist_ok=True)
+    flat = _flatten(diff)
+    out_json = os.path.join(out_dir, "diff.json")
+    out_csv = os.path.join(out_dir, "diff.csv")
+    out_html = os.path.join(out_dir, "report.html")
 
+    write_json(diff, out_json)
+    write_csv(flat, out_csv)
+    write_html(diff, flat, out_html)
+
+    return {"json": out_json, "csv": out_csv, "html": out_html}
 
 
 
