@@ -73,5 +73,39 @@
       <div class="dup" id="dupbox" style="display:none;"></div>
       <div class="foot">Tip: open this file and share it as-is. No server needed.</div>
     </div>
+    <script>
+      const DATA = {{__DATA__}};
+      const meta = DATA.meta;
+      const rows = DATA.rows;
+
+      const elMeta = document.getElementById("meta");
+      const elCards = document.getElementById("cards");
+      const elBody = document.getElementById("tbody");
+      const elQ = document.getElementById("q");
+
+      const fAdded = document.getElementById("f_added");
+      const fRemoved = document.getElementById("f_removed");
+      const fChanged = document.getElementById("f_changed");
+
+      const dupbox = document.getElementById("dupbox");
+
+      elMeta.textContent = `${meta.left}  →  ${meta.right}   •   keys: ${meta.keys.join(", ")}`;
+
+      const cards = [
+        ["Added", meta.counts.added],
+        ["Removed", meta.counts.removed],
+        ["Changed", meta.counts.changed],
+        ["Dup Keys (left)", meta.counts.duplicates_left],
+        ["Dup Keys (right)", meta.counts.duplicates_right],
+      ];
+
+      elCards.innerHTML = cards.map(([k,v]) => `
+        <div class="card">
+          <div class="k">${k}</div>
+          <div class="v">${v}</div>
+        </div>
+      `).join("");
+
+
 
 
