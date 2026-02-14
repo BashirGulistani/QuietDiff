@@ -105,6 +105,47 @@
           <div class="v">${v}</div>
         </div>
       `).join("");
+      function pillToggle(btn){
+        btn.dataset.on = btn.dataset.on === "1" ? "0" : "1";
+      }
+
+      fAdded.onclick = () => { pillToggle(fAdded); render(); };
+      fRemoved.onclick = () => { pillToggle(fRemoved); render(); };
+      fChanged.onclick = () => { pillToggle(fChanged); render(); };
+
+      function onType(type){
+        if(type === "added") return fAdded.dataset.on === "1";
+        if(type === "removed") return fRemoved.dataset.on === "1";
+        return fChanged.dataset.on === "1";
+      }
+
+      function rowText(r){
+        return `${r.type} ${r.key} ${r.column} ${r.old} ${r.new}`.toLowerCase();
+      }
+
+      function render(){
+        const q = (elQ.value || "").trim().toLowerCase();
+        const filtered = rows.filter(r => {
+          if(!onType(r.type)) return false;
+          if(!q) return true;
+          return rowText(r).includes(q);
+        });
+
+        elBody.innerHTML = filtered.map(r => `
+          <tr>
+            <td>
+              <span class="type">
+                <span class="dot ${r.type}"></span>
+                <span>${r.type}</span>
+              </span>
+            </td>
+            <td class="mono">${escapeHtml(r.key)}</td>
+            <td class="mono">${escapeHtml(r.column || "")}</td>
+            <td class="mono muted">${escapeHtml(r.old || "")}</td>
+            <td class="mono">${escapeHtml(r.new || "")}</td>
+          </tr>
+        `).join("");
+
 
 
 
