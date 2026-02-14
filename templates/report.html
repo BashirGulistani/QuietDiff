@@ -38,3 +38,40 @@
     </style>
   </head>
 
+
+    <body>
+    <div class="wrap">
+      <div class="top">
+        <div>
+          <h1>QuietDiff Report</h1>
+          <div class="sub" id="meta"></div>
+        </div>
+      </div>
+
+      <div class="grid" id="cards"></div>
+
+      <div class="tools">
+        <input class="in" id="q" placeholder="Search key / column / old / new..." />
+        <button class="pill" id="f_added" data-on="1">Added</button>
+        <button class="pill" id="f_removed" data-on="1">Removed</button>
+        <button class="pill" id="f_changed" data-on="1">Changed</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 130px;">Type</th>
+            <th>Key</th>
+            <th style="width: 180px;">Column</th>
+            <th>Old</th>
+            <th>New</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+
+      <div class="dup" id="dupbox" style="display:none;"></div>
+      <div class="foot">Tip: open this file and share it as-is. No server needed.</div>
+    </div>
+
+
