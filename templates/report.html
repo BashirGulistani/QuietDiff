@@ -146,7 +146,33 @@
           </tr>
         `).join("");
 
+        const dL = meta.duplicates.left || [];
+        const dR = meta.duplicates.right || [];
+        if(dL.length || dR.length){
+          dupbox.style.display = "block";
+          dupbox.innerHTML = `
+            <h3>Duplicate keys</h3>
+            <pre class="mono">left: ${escapeHtml(dL.join(", "))}\nright: ${escapeHtml(dR.join(", "))}</pre>
+          `;
+        } else {
+          dupbox.style.display = "none";
+        }
+      }
 
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      elQ.addEventListener("input", render);
+      render();
+    </script>
+  </body>
+</html>
 
 
 
