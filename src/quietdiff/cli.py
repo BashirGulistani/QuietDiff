@@ -47,6 +47,27 @@ def main(argv: list[str] | None = None) -> None:
             fuzzy=args.fuzzy,
             fuzzy_threshold=args.fuzzy_threshold,
         )
+        paths = write_all(diff, out_dir)
 
+        has_changes = (len(diff.added) + len(diff.removed) + len(diff.changed)) > 0
+        msg = [
+            f"left: {diff.left_name}",
+            f"right: {diff.right_name}",
+            f"keys: {', '.join(diff.keys)}",
+            f"added: {len(diff.added)}",
+            f"removed: {len(diff.removed)}",
+            f"changed: {len(diff.changed)}",
+            f"report: {os.path.abspath(paths['html'])}",
+        ]
+        print("\n".join(msg))
+
+        if has_changes:
+            raise SystemExit(1)
+        raise SystemExit(0)
+    except SystemExit:
+        raise
+    except Exception as e:
+        print(f"quietdiff error: {e}", file=sys.stderr)
+        raise SystemExit(2)
 
 
