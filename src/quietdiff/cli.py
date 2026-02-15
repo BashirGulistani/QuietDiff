@@ -9,9 +9,6 @@ from .io import ensure_out_dir, read_table
 from .report import write_all
 
 
-
-
-
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="quietdiff", add_help=True)
     p.add_argument("left", help="Left input file (.csv or .xlsx)")
@@ -27,6 +24,29 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out-dir", default="out")
     return p
 
+
+
+
+
+def main(argv: list[str] | None = None) -> None:
+    args = build_parser().parse_args(argv)
+
+    try:
+        left = read_table(args.left, args.sheet_left)
+        right = read_table(args.right, args.sheet_right)
+
+        out_dir = ensure_out_dir(args.out_dir)
+
+        diff = diff_tables(
+            left=left,
+            right=right,
+            keys=args.key,
+            include=args.include,
+            ignore=args.ignore,
+            tolerance=args.tolerance,
+            fuzzy=args.fuzzy,
+            fuzzy_threshold=args.fuzzy_threshold,
+        )
 
 
 
